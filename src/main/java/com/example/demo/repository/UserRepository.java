@@ -1,13 +1,31 @@
-package com.example.demo.repository;
+
+package com.example.demo.security;
 
 import com.example.demo.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.Service;
+import java.util.Collections;
 
-import java.util.Optional;
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+    private final UserRepository userRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    boolean existsByEmail(String email);
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-    Optional<User> findByEmail(String email);
+        // CRITICAL: You MUST add "ROLE_" prefix here
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+        );
+    }
 }
