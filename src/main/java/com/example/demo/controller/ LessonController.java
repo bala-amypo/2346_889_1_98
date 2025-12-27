@@ -1,32 +1,46 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.model.User;
-import com.example.demo.service.UserService;
-
+import com.example.demo.model.MicroLesson;
+import com.example.demo.service.LessonService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/auth")
-public class AuthController {
+@RequestMapping("/lessons")
+public class LessonController {
 
-    private final UserService userService;
+    private final LessonService lessonService;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public LessonController(LessonService lessonService) {
+        this.lessonService = lessonService;
     }
 
-    @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.register(user);
+    // existing
+    @PostMapping("/{courseId}")
+    public MicroLesson addLesson(@PathVariable Long courseId,
+                                 @RequestBody MicroLesson lesson) {
+        return lessonService.addLesson(courseId, lesson);
     }
 
-    @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        return userService.login(
-                request.getEmail(),
-                request.getPassword()
-        );
+    // existing
+    @GetMapping("/search")
+    public List<MicroLesson> searchLessons(@RequestParam(required = false) String tags,
+                                           @RequestParam(required = false) String difficulty,
+                                           @RequestParam(required = false) String contentType) {
+        return lessonService.findLessonsByFilters(tags, difficulty, contentType);
+    }
+
+    // STEP-5 REQUIRED (added)
+    @PutMapping("/{lessonId}")
+    public MicroLesson updateLesson(@PathVariable Long lessonId,
+                                    @RequestBody MicroLesson lesson) {
+        return lessonService.updateLesson(lessonId, lesson);
+    }
+
+    // STEP-5 REQUIRED (added)
+    @GetMapping("/{lessonId}")
+    public MicroLesson getLesson(@PathVariable Long lessonId) {
+        return lessonService.getLesson(lessonId);
     }
 }
