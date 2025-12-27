@@ -1,48 +1,32 @@
-
 package com.example.demo.controller;
 
-import com.example.demo.model.MicroLesson;
-import com.example.demo.service.impl.LessonServiceImpl;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/lessons")
-@RequiredArgsConstructor
-@Tag(name = "3. Lesson Management", description = "Manage Micro-Lessons and search content")
-public class LessonController {
+@RequestMapping("/auth")
+public class AuthController {
 
-    private final LessonServiceImpl lessonService;
+    private final UserService userService;
 
-    @PostMapping("/course/{courseId}")
-    @Operation(summary = "Add a micro-lesson to a specific course")
-    public ResponseEntity<MicroLesson> addLesson(@PathVariable Long courseId, @RequestBody MicroLesson lesson) {
-        return ResponseEntity.ok(lessonService.addLesson(courseId, lesson));
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PutMapping("/{lessonId}")
-    @Operation(summary = "Update lesson details")
-    public ResponseEntity<MicroLesson> updateLesson(@PathVariable Long lessonId, @RequestBody MicroLesson lesson) {
-        return ResponseEntity.ok(lessonService.updateLesson(lessonId, lesson));
+    @PostMapping("/register")
+    public User register(@RequestBody User user) {
+        return userService.register(user);
     }
 
-    @GetMapping("/search")
-    @Operation(summary = "Search lessons by Tags, Difficulty, and Content Type")
-    public ResponseEntity<List<MicroLesson>> search(
-            @RequestParam(required = false) String tags,
-            @RequestParam(required = false) String difficulty,
-            @RequestParam(required = false) String contentType) {
-        return ResponseEntity.ok(lessonService.findLessonsByFilters(tags, difficulty, contentType));
-    }
-
-    @GetMapping("/{lessonId}")
-    @Operation(summary = "Get lesson by ID")
-    public ResponseEntity<MicroLesson> getLesson(@PathVariable Long lessonId) {
-        return ResponseEntity.ok(lessonService.getLesson(lessonId));
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody AuthRequest request) {
+        return userService.login(
+                request.getEmail(),
+                request.getPassword()
+        );
     }
 }
