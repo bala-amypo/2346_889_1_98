@@ -1,35 +1,54 @@
-
 package com.example.demo.service.impl;
 
-import com.example.demo.model.*;
-import com.example.demo.repository.*;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.Course;
+import com.example.demo.model.MicroLesson;
+import com.example.demo.repository.CourseRepository;
+import com.example.demo.repository.MicroLessonRepository;
+import com.example.demo.service.LessonService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
-public class LessonServiceImpl {
-    private final MicroLessonRepository lessonRepository;
+public class LessonServiceImpl implements LessonService {
+
+    private final MicroLessonRepository microLessonRepository;
     private final CourseRepository courseRepository;
 
-    public LessonServiceImpl(MicroLessonRepository lr, CourseRepository cr) {
-        this.lessonRepository = lr; this.courseRepository = cr;
+    public LessonServiceImpl(MicroLessonRepository microLessonRepository,
+                             CourseRepository courseRepository) {
+        this.microLessonRepository = microLessonRepository;
+        this.courseRepository = courseRepository;
     }
 
+    @Override
     public MicroLesson addLesson(Long courseId, MicroLesson lesson) {
-        Course c = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Not found"));
-        if (lesson.getDurationMinutes() != null && lesson.getDurationMinutes() > 15) throw new RuntimeException("Too long");
-        lesson.setCourse(c);
-        return lessonRepository.save(lesson);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        lesson.setCourse(course);
+        return microLessonRepository.save(lesson);
     }
 
-    public MicroLesson updateLesson(Long id, MicroLesson upd) {
-        MicroLesson m = lessonRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
-        m.setTitle(upd.getTitle());
-        m.setContentType(upd.getContentType());
-        m.setDifficulty(upd.getDifficulty());
-        return lessonRepository.save(m);
+    @Override
+    public MicroLesson updateLesson(Long lessonId, MicroLesson lesson) {
+        MicroLesson existing = microLessonRepository.findById(lessonId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
+        existing.setTitle(lesson.getTitle());
+        existing.setDifficulty(lesson.getDifficulty());
+        existing.setContentType(lesson.getContentType());
+        existing.setTags(lesson.getTags());
+        return microLessonRepository.save(existing);
     }
 
-    public List<MicroLesson> findLessonsByFilters(String t, String d, String c) { return lessonRepository.findByFilters(t, d, c); }
-    public MicroLesson getLesson(Long id) { return lessonRepository.findById(id).orElse(null); }
+    @Override
+    public List<MicroLesson> findLessonsByFilters(String tags, String difficulty, String contentType) {
+        return microLessonRepository.findByFilters(tags, difficulty, contentType);
+    }
+
+    @Override
+    public MicroLesson getLesson(Long lessonId) {
+        return microLessonRepository.findById(lessonId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
+    }
 }
