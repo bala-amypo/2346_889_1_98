@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 
 @Entity
 @Data
