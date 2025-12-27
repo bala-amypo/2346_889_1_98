@@ -7,33 +7,29 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "progress")
-@Getter @Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Progress {
+public class Recommendation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status;
-
-    private Integer progressPercent;
-
-    private BigDecimal score;
-
-    private LocalDateTime lastAccessedAt;
-
     @ManyToOne
     private User user;
 
-    @ManyToOne
-    private MicroLesson microLesson;
+    private LocalDateTime generatedAt;
+
+    private String recommendedLessonIds; // CSV
+
+    private String basisSnapshot;
+
+    private BigDecimal confidenceScore;
 
     @PrePersist
-    void onCreate() {
-        this.lastAccessedAt = LocalDateTime.now();
+    public void prePersist() {
+        this.generatedAt = LocalDateTime.now();
     }
 }

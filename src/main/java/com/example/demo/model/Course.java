@@ -1,17 +1,17 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "courses")
-@Getter @Setter
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Course {
 
     @Id
@@ -25,17 +25,15 @@ public class Course {
 
     private String category;
 
-    @ManyToOne
-    @JoinColumn(name = "instructor_id")
-    private User instructor;
-
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "course")
-    private List<MicroLesson> lessons;
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    @JsonIgnoreProperties({"courses"}) // 🔥 FIX
+    private User instructor;
 
     @PrePersist
-    void onCreate() {
+    public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
 }
