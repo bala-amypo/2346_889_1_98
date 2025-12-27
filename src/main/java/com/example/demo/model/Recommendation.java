@@ -1,37 +1,39 @@
-
 package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "recommendations")
-@Data
+@Table(name = "progress")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Recommendation {
+public class Progress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String status;
+
+    private Integer progressPercent;
+
+    private BigDecimal score;
+
+    private LocalDateTime lastAccessedAt;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime generatedAt;
-
-    private String recommendedLessonIds;
-
-    private String basisSnapshot;
-
-    private BigDecimal confidenceScore;
+    @ManyToOne
+    private MicroLesson microLesson;
 
     @PrePersist
-    public void prePersist() {
-        this.generatedAt = LocalDateTime.now();
+    void onCreate() {
+        this.lastAccessedAt = LocalDateTime.now();
     }
 }
