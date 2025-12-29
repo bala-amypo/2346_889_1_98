@@ -1,23 +1,4 @@
-package com.example.demo.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-
-@Entity
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String email;
-
-    private S// package com.example.demo.model;
+// package com.example.demo.model;
 
 // import jakarta.persistence.*;
 // import lombok.*;
@@ -72,7 +53,4 @@ public class User {
         this.createdAt = LocalDateTime.now();
         if (this.role == null) this.role = "LEARNER";
     }
-}tring password;
-
-    private String role;
 }
