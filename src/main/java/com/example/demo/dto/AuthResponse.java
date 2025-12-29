@@ -1,14 +1,45 @@
+// package com.example.demo.dto;
+
+// import lombok.*;
+
+// @Data
+// @Builder
+// @NoArgsConstructor
+// @AllArgsConstructor
+// public class AuthResponse {
+//     private String accessToken;
+//     private Long userId;
+//     private String email;
+//     private String role;
+// }
+
+// 2nd one
+// package com.example.demo.dto;
+
+// import lombok.*;
+
+// @Data
+// @Builder
+// @NoArgsConstructor
+// @AllArgsConstructor
+// public class AuthResponse {
+//     private String accessToken;
+//     private Long userId;
+//     private String email;
+//     private String role;
+// }
+
 package com.example.demo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthResponse {
     private String accessToken;
-    private String username;
+    private Long userId;
+    private String email;
     private String role;
 }
