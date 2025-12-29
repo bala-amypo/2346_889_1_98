@@ -41,7 +41,7 @@ public class SwaggerConfig {
                         .description("REST API for micro-learning content and personalized recommendations")
                         .version("1.0.0"))
                 .servers(List.of(
-                        new Server().url("https://9244.408procr.amypo.ai/")
+                        new Server().url("https://9529.pro604cr.amypo.ai//")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList("JWT"))
                 .components(new Components()
